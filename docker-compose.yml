@@ -1,0 +1,27 @@
+services:
+  updater:
+    build: ./updater
+    container_name: github-updater
+    restart: unless-stopped
+    environment:
+      - TZ=America/Manaus
+      - FILE_URL=https://raw.githubusercontent.com/first20hours/google-10000-english/master/google-10000-english.txt
+    volumes:
+      - data:/data
+
+  app:
+    build: ./app
+    container_name: streamlit-viewer
+    restart: unless-stopped
+    environment:
+      - TZ=America/Manaus
+      - FILE_PATH=/data/arquivo.txt
+    volumes:
+      - data:/data:ro
+    ports:
+      - "8501:8501"
+    depends_on:
+      - updater
+
+volumes:
+  data:
